@@ -25,4 +25,5 @@ public class PanierDAO extends GenericDAO<Panier> {
             em.close();
         }
     }
+
 }

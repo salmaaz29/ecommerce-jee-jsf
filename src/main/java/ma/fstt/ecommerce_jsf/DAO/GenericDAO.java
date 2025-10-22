@@ -2,9 +2,10 @@ package ma.fstt.ecommerce_jsf.DAO;
 
 import jakarta.persistence.EntityManager;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class GenericDAO<T>  {
+public class GenericDAO<T> implements Serializable {
 
         private Class<T> entityClass;
 
