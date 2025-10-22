@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd"
+             version="3.2">
+    <persistence-unit name="eCommercePU" transaction-type="JTA">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <jta-data-source>java:/MySqlDS</jta-data-source> <!-- Corrige le JNDI name pour correspondre à standalone.xml -->
+        <class>ma.fstt.ecommerce_jsf.Entities.Commande</class>
+        <class>ma.fstt.ecommerce_jsf.Entities.LigneCommande</class>
+        <class>ma.fstt.ecommerce_jsf.Entities.LignePanier</class>
+        <class>ma.fstt.ecommerce_jsf.Entities.Panier</class>
+        <class>ma.fstt.ecommerce_jsf.Entities.Produit</class>
+        <class>ma.fstt.ecommerce_jsf.Entities.User</class>
+
+        <!-- Propriétés de configuration -->
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/> <!-- Génère automatiquement -->
+            <property name="hibernate.show_sql" value="true"/>      <!-- Affiche les SQL dans la console -->
+            <property name="hibernate.format_sql" value="true"/>    <!-- Formate les SQL -->
+            <property name="hibernate.archive.autodetection" value="class"/> <!-- Détection automatique des entités -->
+            <!-- Optionnel : Log des DDL générés -->
+            <property name="hibernate.hbm2ddl.import_files" value="import.sql"/> <!-- Si tu as un script d'initialisation -->
+        </properties>
+    </persistence-unit>
+</persistence>
