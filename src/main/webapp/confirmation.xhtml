@@ -1,23 +1,398 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 <h:head>
-    <title>Confirmation</title>
+    <title>Commande Confirmée</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Réinitialiser styles PrimeFaces */
+        .ui-panel,
+        .ui-panel-content {
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
+        }
+
+        .ui-panel .ui-panel-titlebar {
+            display: none !important;
+        }
+
+        /* Container principal */
+        .confirmation-container {
+            max-width: 650px;
+            width: 100%;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* En-tête avec animation */
+        .confirmation-header {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            padding: 50px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .confirmation-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .success-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: successAnimation 0.8s ease-out;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes successAnimation {
+            0% {
+                transform: scale(0) rotate(-180deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2) rotate(10deg);
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .confirmation-title {
+            color: white;
+            font-size: 2.5em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .confirmation-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2em;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Contenu */
+        .confirmation-content {
+            padding: 45px 40px;
+            text-align: center;
+        }
+
+        .thank-you-message {
+            color: #2c3e50;
+            font-size: 1.4em;
+            line-height: 1.6;
+            margin-bottom: 35px;
+            font-weight: 400;
+        }
+
+        .thank-you-message strong {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .order-info {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 35px;
+            border-left: 4px solid #27ae60;
+        }
+
+        .order-info-title {
+            font-size: 1.1em;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .order-details {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .order-detail-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .order-detail-icon {
+            font-size: 2em;
+            margin-bottom: 8px;
+        }
+
+        .order-detail-label {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-bottom: 3px;
+        }
+
+        .order-detail-value {
+            font-size: 1.1em;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        /* Boutons d'action */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .ui-button {
+            border: none !important;
+            border-radius: 15px !important;
+            padding: 18px 35px !important;
+            font-size: 1.1em !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+            width: 100%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2) !important;
+            color: white !important;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4) !important;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #3498db, #2980b9) !important;
+            color: white !important;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.4) !important;
+        }
+
+        .btn-logout {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d) !important;
+            color: white !important;
+            font-size: 1em !important;
+            padding: 15px 30px !important;
+        }
+
+        .btn-logout:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 8px 20px rgba(127, 140, 141, 0.3) !important;
+        }
+
+        .ui-button .ui-button-text {
+            padding: 0 !important;
+        }
+
+        .ui-button .ui-button-icon-left {
+            margin-right: 8px;
+        }
+
+        /* Section déconnexion */
+        .logout-section {
+            padding-top: 25px;
+            border-top: 2px solid #ecf0f1;
+        }
+
+        .logout-text {
+            color: #7f8c8d;
+            font-size: 0.95em;
+            margin-bottom: 15px;
+        }
+
+        /* Messages */
+        .ui-messages {
+            margin-bottom: 25px;
+            border-radius: 12px !important;
+            border: none !important;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .confirmation-container {
+                margin: 20px;
+            }
+
+            .confirmation-header {
+                padding: 40px 30px;
+            }
+
+            .confirmation-title {
+                font-size: 2em;
+            }
+
+            .success-icon {
+                font-size: 4em;
+            }
+
+            .confirmation-content {
+                padding: 35px 25px;
+            }
+
+            .thank-you-message {
+                font-size: 1.2em;
+            }
+
+            .order-details {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .confirmation-title {
+                font-size: 1.8em;
+            }
+
+            .confirmation-subtitle {
+                font-size: 1em;
+            }
+
+            .success-icon {
+                font-size: 3.5em;
+            }
+
+            .thank-you-message {
+                font-size: 1.1em;
+            }
+
+            .confirmation-content {
+                padding: 30px 20px;
+            }
+
+            .ui-button {
+                padding: 15px 25px !important;
+                font-size: 1em !important;
+            }
+        }
+
+        /* Animation du checkmark */
+        @keyframes checkmark {
+            0% {
+                stroke-dashoffset: 100;
+            }
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+    </style>
 </h:head>
 <h:body>
     <h:form>
-        <p:panel header="Commande Confirmée">
-            <p:messages autoUpdate="true"/>
-            <h:outputText value="Merci #{userBean.currentuser.nom} ! Votre commande a été enregistrée avec succès."/>
-            <p:button value="Retour aux produits" outcome="produits.xhtml"/>
-            <p:button value="Voir historique des commandes" outcome="historique_user.xhtml"/>
-            <p:commandButton value="Déconnexion"
-                             action="#{userBean.logout()}"
-                             immediate="true"
-                             ajax="false"/>
-        </p:panel>
+        <div class="confirmation-container">
+            <div class="confirmation-header">
+                <div class="success-icon">✅</div>
+                <div class="confirmation-title">Commande Confirmée !</div>
+                <div class="confirmation-subtitle">Votre commande a été enregistrée avec succès</div>
+            </div>
+
+            <div class="confirmation-content">
+                <p:messages autoUpdate="true"/>
+
+                <div class="thank-you-message">
+                    Merci <strong>#{userBean.currentuser.nom}</strong> !<br/>
+                    Nous avons bien reçu votre commande et nous la traitons dès maintenant.
+                </div>
+
+                <div class="order-info">
+                    <div class="order-info-title">📦 Prochaines étapes</div>
+                    <div class="order-details">
+                        <div class="order-detail-item">
+                            <div class="order-detail-icon">📧</div>
+                            <div class="order-detail-label">Confirmation</div>
+                            <div class="order-detail-value">Par email</div>
+                        </div>
+                        <div class="order-detail-item">
+                            <div class="order-detail-icon">📋</div>
+                            <div class="order-detail-label">Suivi</div>
+                            <div class="order-detail-value">Dans l'historique</div>
+                        </div>
+                        <div class="order-detail-item">
+                            <div class="order-detail-icon">🚚</div>
+                            <div class="order-detail-label">Livraison</div>
+                            <div class="order-detail-value">Bientôt</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <p:button value="🛍️ Continuer mes achats"
+                              outcome="produits.xhtml"
+                              styleClass="btn-primary"
+                              icon="pi pi-shopping-cart"/>
+
+                    <p:button value="📋 Voir mon historique"
+                              outcome="historique_user.xhtml"
+                              styleClass="btn-secondary"
+                              icon="pi pi-list"/>
+                </div>
+
+                <div class="logout-section">
+                    <div class="logout-text">Besoin de quitter ?</div>
+                    <p:commandButton value="Se Déconnecter"
+                                     action="#{userBean.logout()}"
+                                     immediate="true"
+                                     ajax="false"
+                                     styleClass="btn-logout"
+                                     icon="pi pi-power-off"/>
+                </div>
+            </div>
+        </div>
     </h:form>
 </h:body>
 </html>

@@ -52,7 +52,7 @@ public class AdminCommandeBean implements Serializable {
         }
     }
 
-    // ✅ Mise à jour automatique avec AJAX
+    //  Mise à jour automatique avec AJAX
     @Transactional
     public void updateStatutAjax(Long commandeId, String nouveauStatut) {
         try {

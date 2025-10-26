@@ -1,7 +1,6 @@
 package ma.fstt.ecommerce_jsf.Beans;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -17,7 +16,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Logger;
 
-@Named("produitBean") // ✅ Ajout du nom pour la cohérence
+@Named("produitBean")
 @SessionScoped
 @Getter
 @Setter

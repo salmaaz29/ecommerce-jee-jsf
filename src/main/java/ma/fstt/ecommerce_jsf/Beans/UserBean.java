@@ -16,7 +16,7 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-@Named("userBean") // ✅ Changé en minuscule pour la cohérence
+@Named("userBean")
 @SessionScoped
 public class UserBean implements Serializable {
 
@@ -66,7 +66,7 @@ public class UserBean implements Serializable {
 
     // inscription
     @Transactional // ✅
-    public String register() { // ✅ Changé en minuscule pour la convention Java
+    public String register() {
         try {
             User existeuser = userDAO.findByEmail(email);
             if (existeuser != null) {
@@ -100,7 +100,6 @@ public class UserBean implements Serializable {
     }
 
     // vérifier si le user est connecté ou pas
-    // ❌ Pas besoin de @Transactional sur les getters
     public boolean isLogged() {
         return currentuser != null;
     }

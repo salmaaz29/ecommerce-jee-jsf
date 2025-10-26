@@ -1,7 +1,6 @@
 package ma.fstt.ecommerce_jsf.DAO;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
@@ -30,13 +29,4 @@ public class PanierDAO extends GenericDAO<Panier> {
         }
     }
 
-
-    @Transactional
-    public void viderPanier(Long userId){
-
-        em.createQuery("DELETE FROM Panier p WHERE p.user.id_user = :userId").
-                setParameter("userId",userId).
-                executeUpdate();
-
-    }
 }

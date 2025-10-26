@@ -18,7 +18,7 @@ public class GenericDAO<T> implements Serializable {
         this.entityClass = entityClass;
     }
 
-    // ✅ MÉTHODES D'ÉCRITURE - AVEC @Transactional
+
     @Transactional
     public void create(T entity) {
         em.persist(entity);
@@ -42,7 +42,6 @@ public class GenericDAO<T> implements Serializable {
         }
     }
 
-    // ❌ MÉTHODES DE LECTURE - SANS @Transactional
     public T findById(Long id) {
         return em.find(entityClass, id);
     }

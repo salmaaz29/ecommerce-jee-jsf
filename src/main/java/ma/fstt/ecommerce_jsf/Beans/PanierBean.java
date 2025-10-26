@@ -61,7 +61,7 @@ public class PanierBean implements Serializable {
                     lignes = new ArrayList<>();  // ← Panier vide
                     logger.info("✅ Nouveau panier créé ID: " + panier.getId_panier());
                 } else {
-                    // ✅ CORRECTION: Charger depuis LignePanierDAO au lieu de panier.getLignes()
+                    //Charger depuis LignePanierDAO au lieu de panier.getLignes()
                     lignes = lignePanierDAO.findByPanierId(panier.getId_panier());
                     logger.info("✅ Panier chargé ID: " + panier.getId_panier() + " avec " + lignes.size() + " articles");
                 }

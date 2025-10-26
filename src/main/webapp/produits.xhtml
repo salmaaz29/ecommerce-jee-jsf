@@ -9,6 +9,14 @@
     <h:form id="mainForm">
         <p:panel header="Catalogue des Produits" rendered="#{userBean.logged}">
             <p:dataTable value="#{produitBean.produits}" var="produit">
+                <!-- ✅ NOUVELLE COLONNE : Photo du produit -->
+                <p:column headerText="Photo" style="width: 120px; text-align: center;">
+                    <p:graphicImage value="#{produit.image}"
+                                    width="100"
+                                    height="100"
+                                    style="object-fit: cover; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"/>
+                </p:column>
+
                 <p:column headerText="Nom">
                     <h:outputText value="#{produit.nom}"/>
                 </p:column>
@@ -26,6 +34,14 @@
 
             <p:panel id="panierPanel" header="Panier" style="margin-top: 20px">
                 <p:dataTable value="#{panierBean.lignes}" var="ligne">
+                    <!-- ✅ NOUVELLE COLONNE : Photo du produit dans le panier -->
+                    <p:column headerText="Photo" style="width: 80px; text-align: center;">
+                        <p:graphicImage value="#{ligne.produit.image}"
+                                        width="60"
+                                        height="60"
+                                        style="object-fit: cover; border-radius: 6px;"/>
+                    </p:column>
+
                     <p:column headerText="Produit">
                         <h:outputText value="#{ligne.produit.nom}"/>
                     </p:column>
@@ -66,12 +82,5 @@
             <p:button value="Se connecter" outcome="login.xhtml"/>
         </p:panel>
     </h:form>
-
-    <script type="text/javascript">
-        function updateQuantity(ligne, quantite) {
-            // Cette fonction peut être utilisée pour mettre à jour la quantité via AJAX
-            // Vous pouvez implémenter une mise à jour automatique si nécessaire
-        }
-    </script>
 </h:body>
 </html>

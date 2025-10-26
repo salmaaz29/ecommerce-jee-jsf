@@ -76,7 +76,7 @@ public class CommandeBean implements Serializable {
                 ligneCommandeDAO.create(lc);
             }
 
-            // ✅ CORRECTION : Vider complètement le panier (mémoire + base)
+            //  Vider complètement le panier
             viderPanierComplet();
 
             FacesContext.getCurrentInstance().addMessage(null,
@@ -91,7 +91,7 @@ public class CommandeBean implements Serializable {
         }
     }
 
-    // ✅ AJOUTEZ cette méthode pour vider complètement le panier
+    // vider complètement le panier
     @Transactional
     private void viderPanierComplet() {
         try {
@@ -117,7 +117,7 @@ public class CommandeBean implements Serializable {
         }
     }
 
-    // ✅ Méthode pour charger les commandes de l'utilisateur courant
+    //  charger les commandes de l'utilisateur courant
     @Transactional
     public List<Commande> loadCommandesUtilisateur() {
         if (userBean.getCurrentuser() == null) {

@@ -48,25 +48,17 @@
                 </p:column>
 
                 <p:column headerText="Statut" style="width: 200px;">
-                    <!-- ✅ SOLUTION SIMPLE : AJAX direct sur le selectOneMenu -->
+                    <!--  AJAX direct sur le selectOneMenu -->
                     <p:selectOneMenu value="#{commande.statut}" style="width: 100%">
                         <f:selectItem itemLabel="EN_COURS" itemValue="EN_COURS"/>
                         <f:selectItem itemLabel="VALIDEE" itemValue="VALIDEE"/>
                         <f:selectItem itemLabel="LIVREE" itemValue="LIVREE"/>
                         <f:selectItem itemLabel="ANNULEE" itemValue="ANNULEE"/>
-                        <!-- ✅ Mise à jour automatique quand on change la sélection -->
+                        <!--  Mise à jour automatique quand on change la sélection -->
                         <p:ajax event="change"
                                 listener="#{adminCommandeBean.updateStatutAjax(commande.id_commande, commande.statut)}"
                                 update=":adminCommandeForm:messages"/>
                     </p:selectOneMenu>
-                </p:column>
-
-                <p:column headerText="Actions" style="width: 120px; text-align: center;">
-                    <p:commandButton value="Détails"
-                                     icon="pi pi-info-circle"
-                                     styleClass="ui-button-info"
-                                     onclick="PF('detailsDialog#{commande.id_commande}').show();"
-                                     type="button"/>
                 </p:column>
             </p:dataTable>
 
