@@ -1,29 +1,42 @@
 package ma.fstt.ecommerce_jsf.DAO;
 
-
-import jakarta.persistence.EntityManager;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+import jakarta.persistence.NoResultException;
+import jakarta.transaction.Transactional;
 import ma.fstt.ecommerce_jsf.Entities.Panier;
 
+@Named
+@ApplicationScoped
 public class PanierDAO extends GenericDAO<Panier> {
 
     public PanierDAO() {
         super(Panier.class);
     }
 
-    public Panier findByUser(Long USERID) {
-        EntityManager em = JPAUtil.getEntityManager();
+    // ✅ AVEC @Transactional
+    @Transactional
+    public Panier findByUser(Long userId) {
         try {
             return em.createQuery(
-                            "SELECT p FROM Panier p WHERE p.user.id_user = :usertId ORDER BY p.datecreation DESC",
+                            "SELECT p FROM Panier p WHERE p.user.id_user = :userId ORDER BY p.datecreation DESC",
                             Panier.class)
-                    .setParameter("usertId", USERID)
+                    .setParameter("userId", userId)
                     .setMaxResults(1)
                     .getSingleResult();
-        } catch (Exception e) {
+        } catch (NoResultException e) {
             return null;
-        } finally {
-            em.close();
         }
     }
 
+
+    @Transactional
+    public void viderPanier(Long userId){
+
+        em.createQuery("DELETE FROM Panier p WHERE p.user.id_user = :userId").
+                setParameter("userId",userId).
+                executeUpdate();
+
+    }
 }

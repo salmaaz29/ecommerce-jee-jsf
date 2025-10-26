@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Gestion des Commandes</title>
+</h:head>
+<h:body>
+    <h:form id="adminCommandeForm">
+        <p:panel id="adminPanel" header="Gestion des Commandes - Administration"
+                 style="width: 100%; max-width: 1200px; margin: 0 auto;"
+                 rendered="#{userBean.isAdmin()}">
+
+            <p:messages id="messages" showDetail="true" showSummary="false" autoUpdate="true"/>
+
+            <!-- Tableau des commandes -->
+            <p:dataTable id="commandeTable"
+                         value="#{adminCommandeBean.commandes}"
+                         var="commande"
+                         paginator="true"
+                         rows="10"
+                         style="margin-top: 20px;">
+
+                <p:column headerText="ID" style="width: 60px; text-align: center;">
+                    <h:outputText value="#{commande.id_commande}"/>
+                </p:column>
+
+                <p:column headerText="Client">
+                    <h:panelGroup>
+                        <strong><h:outputText value="#{commande.user.nom}"/></strong><br/>
+                        <span style="color: #666; font-size: 0.9em;">
+                            <h:outputText value="#{commande.user.email}"/>
+                        </span>
+                    </h:panelGroup>
+                </p:column>
+
+                <p:column headerText="Date" style="width: 150px;">
+                    <h:outputText value="#{commande.dateCommande}">
+                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Total" style="width: 120px; text-align: right;">
+                    <h:outputText value="#{commande.total}">
+                        <f:convertNumber type="number" minFractionDigits="2" maxFractionDigits="2"/>
+                    </h:outputText> DH
+                </p:column>
+
+                <p:column headerText="Statut" style="width: 200px;">
+                    <!-- ✅ SOLUTION SIMPLE : AJAX direct sur le selectOneMenu -->
+                    <p:selectOneMenu value="#{commande.statut}" style="width: 100%">
+                        <f:selectItem itemLabel="EN_COURS" itemValue="EN_COURS"/>
+                        <f:selectItem itemLabel="VALIDEE" itemValue="VALIDEE"/>
+                        <f:selectItem itemLabel="LIVREE" itemValue="LIVREE"/>
+                        <f:selectItem itemLabel="ANNULEE" itemValue="ANNULEE"/>
+                        <!-- ✅ Mise à jour automatique quand on change la sélection -->
+                        <p:ajax event="change"
+                                listener="#{adminCommandeBean.updateStatutAjax(commande.id_commande, commande.statut)}"
+                                update=":adminCommandeForm:messages"/>
+                    </p:selectOneMenu>
+                </p:column>
+
+                <p:column headerText="Actions" style="width: 120px; text-align: center;">
+                    <p:commandButton value="Détails"
+                                     icon="pi pi-info-circle"
+                                     styleClass="ui-button-info"
+                                     onclick="PF('detailsDialog#{commande.id_commande}').show();"
+                                     type="button"/>
+                </p:column>
+            </p:dataTable>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <p:button value="Retour au tableau de bord"
+                          outcome="dashboard_admin.xhtml"
+                          icon="pi pi-home"/>
+            </div>
+        </p:panel>
+
+        <p:panel header="Accès interdit" rendered="#{!userBean.isAdmin()}">
+            <h:outputText value="Vous n'avez pas les droits pour accéder à cette page."/>
+            <p:button value="Retour" outcome="produits.xhtml"/>
+        </p:panel>
+    </h:form>
+</h:body>
+</html>

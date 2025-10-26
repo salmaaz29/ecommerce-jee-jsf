@@ -1,85 +1,54 @@
 package ma.fstt.ecommerce_jsf.DAO;
 
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import java.io.Serializable;
 import java.util.List;
 
 public class GenericDAO<T> implements Serializable {
 
-        private Class<T> entityClass;
+    private Class<T> entityClass;
 
-        public GenericDAO(Class<T> entityClass) {
-            this.entityClass = entityClass;
-        }
+    @PersistenceContext(unitName = "ecommercePU")
+    protected EntityManager em;
 
-        public void create(T entity) {
-            EntityManager em = JPAUtil.getEntityManager();
-            try {
-                em.getTransaction().begin();
-                em.persist(entity);
-                em.getTransaction().commit();
-            } catch (Exception e) {
-                if (em.getTransaction().isActive()) {
-                    em.getTransaction().rollback();
-                }
-                e.printStackTrace();
-            } finally {
-                em.close();
-            }
-        }
+    public GenericDAO(Class<T> entityClass) {
+        this.entityClass = entityClass;
+    }
 
-        public T findById(Long id) {
-            EntityManager em = JPAUtil.getEntityManager();
-            try {
-                return em.find(entityClass, id);
-            } finally {
-                em.close();
-            }
-        }
+    // ✅ MÉTHODES D'ÉCRITURE - AVEC @Transactional
+    @Transactional
+    public void create(T entity) {
+        em.persist(entity);
+    }
 
-        public List<T> findAll() {
-            EntityManager em = JPAUtil.getEntityManager();
-            try {
-                return em.createQuery("SELECT e FROM " + entityClass.getSimpleName() + " e", entityClass)
-                        .getResultList();
-            } finally {
-                em.close();
-            }
-        }
+    @Transactional
+    public void save(T entity) {
+        em.persist(entity);
+    }
 
-        public void update(T entity) {
-            EntityManager em = JPAUtil.getEntityManager();
-            try {
-                em.getTransaction().begin();
-                em.merge(entity);
-                em.getTransaction().commit();
-            } catch (Exception e) {
-                if (em.getTransaction().isActive()) {
-                    em.getTransaction().rollback();
-                }
-                e.printStackTrace();
-            } finally {
-                em.close();
-            }
-        }
+    @Transactional
+    public void update(T entity) {
+        em.merge(entity);
+    }
 
-        public void delete(Long id) {
-            EntityManager em = JPAUtil.getEntityManager();
-            try {
-                em.getTransaction().begin();
-                T entity = em.find(entityClass, id);
-                if (entity != null) {
-                    em.remove(entity);
-                }
-                em.getTransaction().commit();
-            } catch (Exception e) {
-                if (em.getTransaction().isActive()) {
-                    em.getTransaction().rollback();
-                }
-                e.printStackTrace();
-            } finally {
-                em.close();
-            }
+    @Transactional
+    public void delete(Long id) {
+        T entity = em.find(entityClass, id);
+        if (entity != null) {
+            em.remove(entity);
         }
     }
+
+    // ❌ MÉTHODES DE LECTURE - SANS @Transactional
+    public T findById(Long id) {
+        return em.find(entityClass, id);
+    }
+
+    public List<T> findAll() {
+        return em.createQuery("SELECT e FROM " + entityClass.getSimpleName() + " e", entityClass)
+                .getResultList();
+    }
+}

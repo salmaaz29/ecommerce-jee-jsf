@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Mes Commandes</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        /* General Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 1rem;
+        }
+
+        /* Header Styling */
+        h1 {
+            text-align: center;
+            padding: 2rem 0;
+            font-size: 2.5rem;
+            color: #2c3e50;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Panel Styling */
+        .ui-panel {
+            max-width: 800px;
+            margin: 2rem auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            padding: 1.5rem;
+            border: none;
+        }
+
+        .ui-panel .ui-panel-content {
+            text-align: center;
+        }
+
+        /* DataTable Styling */
+        .ui-datatable {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .ui-datatable .ui-datatable-header {
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            color: #ffffff;
+            font-size: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+        }
+
+        .ui-datatable th {
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            font-weight: 500;
+            padding: 0.75rem;
+            border-bottom: 2px solid #dcdcdc;
+        }
+
+        .ui-datatable td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #dcdcdc;
+            font-size: 1rem;
+        }
+
+        .ui-datatable .ui-datatable-data tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .ui-datatable .ui-datatable-data tr:hover {
+            background-color: #e8f4ff;
+        }
+
+        .ui-datatable-empty-message {
+            text-align: center;
+            padding: 1rem;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        /* Button Styling */
+        .ui-button {
+            display: inline-block;
+            margin: 1rem 0;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 5px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            background-color: #2ecc71;
+            color: #ffffff;
+        }
+
+        .ui-button:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Specific Button for Non-Logged-In State */
+        .ui-panel .ui-button {
+            background-color: #e74c3c;
+        }
+
+        .ui-panel .ui-button:hover {
+            background-color: #c0392b;
+        }
+
+        /* Paragraph Styling for Non-Logged-In Message */
+        .ui-panel p {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+                padding: 1.5rem 1rem;
+            }
+
+            .ui-panel {
+                margin: 1rem;
+                padding: 1rem;
+            }
+
+            .ui-datatable th,
+            .ui-datatable td {
+                font-size: 0.9rem;
+                padding: 0.5rem;
+            }
+
+            .ui-button {
+                display: block;
+                width: 100%;
+                margin: 0.5rem 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .ui-datatable {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</h:head>
+<h:body>
+    <header>
+        <h1>Mes Commandes</h1>
+    </header>
+    <h:form id="ordersForm">
+        <p:panel rendered="#{not userBean.logged}">
+            <h:outputText value="Veuillez vous connecter pour voir vos commandes." />
+            <p:button value="Se connecter" outcome="login.xhtml" icon="pi pi-sign-in" />
+    </p:panel>
+
+    <p:panel rendered="#{userBean.logged}">
+        <p:dataTable value="#{commandeBean.loadCommandesUtilisateur()}" var="commande"
+                     emptyMessage="Aucune commande trouvée"
+                     styleClass="order-table">
+            <p:column headerText="ID Commande" sortBy="#{commande.id_commande}">
+                <h:outputText value="#{commande.id_commande}"/>
+            </p:column>
+
+            <p:column headerText="Date" sortBy="#{commande.dateCommande}">
+                <h:outputText value="#{commande.dateCommande}">
+                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                </h:outputText>
+            </p:column>
+
+            <p:column headerText="Statut" sortBy="#{commande.statut}">
+                <h:outputText value="#{commande.statut}"/>
+            </p:column>
+
+            <p:column headerText="Total" sortBy="#{commande.total}">
+                <h:outputText value="#{commande.total} DH"/>
+            </p:column>
+        </p:dataTable>
+
+        <div style="text-align: center; margin-top: 1.5rem;">
+            <p:button value="Retour à la boutique" outcome="produits.xhtml" icon="pi pi-shopping-cart" />
+        </div>
+    </p:panel>
+</h:form>
+</h:body>
+</html>

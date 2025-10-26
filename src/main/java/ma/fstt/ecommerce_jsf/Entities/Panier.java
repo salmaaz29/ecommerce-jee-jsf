@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class Panier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_panier;
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date datecreation;
     @Column
     private Double total;
@@ -25,8 +26,13 @@ public class Panier {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "panier", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LignePanier> lignes;
+    @OneToMany(mappedBy = "panier", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
+    private List<LignePanier> lignes = new ArrayList<>();
+
+    @PrePersist
+    protected void onCreate() {
+        datecreation = new Date();
+    }
 
     public Panier(Date datecreation, Double total, User user) {
         this.datecreation = datecreation;

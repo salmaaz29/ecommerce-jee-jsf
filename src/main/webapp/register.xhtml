@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+   <title>Inscription</title>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <style>
+      /* General Reset and Base Styles */
+      * {
+         margin: 0;
+         padding: 0;
+         box-sizing: border-box;
+         font-family: 'Segoe UI', Arial, sans-serif;
+      }
+
+      body {
+         background-color: #f4f7fa;
+         color: #333;
+         line-height: 1.6;
+         padding: 1rem;
+      }
+
+      /* Header Styling */
+      h1 {
+         text-align: center;
+         padding: 2rem 0;
+         font-size: 2.5rem;
+         color: #2c3e50;
+         text-transform: uppercase;
+         letter-spacing: 1.5px;
+         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Panel Styling */
+      .ui-panel {
+         max-width: 600px;
+         margin: 2rem auto;
+         border-radius: 10px;
+         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+         background: #ffffff;
+         padding: 1.5rem;
+         border: none;
+      }
+
+      .ui-panel .ui-panel-titlebar {
+         background: linear-gradient(90deg, #3498db, #2980b9);
+         color: #ffffff;
+         font-size: 1.5rem;
+         padding: 1rem;
+         border-radius: 8px 8px 0 0;
+         text-align: center;
+      }
+
+      /* Form Styling */
+      .ui-panelgrid {
+         width: 100%;
+         border-collapse: collapse;
+      }
+
+      .ui-panelgrid td {
+         padding: 0.75rem;
+         vertical-align: middle;
+      }
+
+      .ui-outputlabel {
+         font-weight: 500;
+         color: #2c3e50;
+         font-size: 1rem;
+      }
+
+      .ui-inputfield {
+         width: 100%;
+         padding: 0.75rem;
+         border: 1px solid #dcdcdc;
+         border-radius: 5px;
+         font-size: 1rem;
+         transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .ui-inputfield:focus {
+         border-color: #3498db;
+         box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+         outline: none;
+      }
+
+      /* Password Field Styling */
+      .ui-password .ui-inputfield {
+         width: 100%;
+      }
+
+      /* Button Styling */
+      .ui-button, .ui-commandbutton {
+         display: inline-block;
+         margin: 0.5rem;
+         padding: 0.75rem 1.5rem;
+         font-size: 1rem;
+         font-weight: 500;
+         border-radius: 5px;
+         text-transform: uppercase;
+         transition: all 0.3s ease;
+         cursor: pointer;
+         border: none;
+      }
+
+      .ui-commandbutton {
+         background-color: #2ecc71;
+         color: #ffffff;
+      }
+
+      .ui-commandbutton:hover {
+         background-color: #27ae60;
+         transform: translateY(-2px);
+         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .ui-button {
+         background-color: #e74c3c;
+         color: #ffffff;
+      }
+
+      .ui-button:hover {
+         background-color: #c0392b;
+         transform: translateY(-2px);
+         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Messages Styling */
+      .ui-messages {
+         margin: 1rem 0;
+         text-align: center;
+      }
+
+      .ui-messages-error {
+         background-color: #fce4e4;
+         border: 1px solid #e74c3c;
+         color: #c0392b;
+         padding: 0.75rem;
+         border-radius: 5px;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+         h1 {
+            font-size: 2rem;
+            padding: 1.5rem 1rem;
+         }
+
+         .ui-panel {
+            margin: 1rem;
+            padding: 1rem;
+         }
+
+         .ui-panelgrid td {
+            display: block;
+            width: 100%;
+            text-align: left;
+         }
+
+         .ui-outputlabel {
+            margin-bottom: 0.5rem;
+         }
+
+         .ui-button, .ui-commandbutton {
+            display: block;
+            width: 100%;
+            margin: 0.5rem 0;
+         }
+      }
+   </style>
+</h:head>
+<h:body>
+   <header>
+      <h1>Inscription</h1>
+   </header>
+   <h:form id="registerForm">
+      <p:messages id="messages" showDetail="true" autoUpdate="true"/>
+      <p:panel header="Inscription">
+         <p:panelGrid columns="2">
+            <p:outputLabel for="nom" value="Nom :" />
+            <p:inputText id="nom" value="#{userBean.nom}" required="true" requiredMessage="Le nom est requis"/>
+            <p:outputLabel for="email" value="Email :" />
+            <p:inputText id="email" value="#{userBean.email}" required="true" requiredMessage="L'email est requis"/>
+            <p:outputLabel for="adresse" value="Adresse :" />
+            <p:inputText id="adresse" value="#{userBean.adresse}" required="true" requiredMessage="L'adresse est requise"/>
+            <p:outputLabel for="mot_de_passe" value="Mot de passe :" />
+            <p:password id="mot_de_passe" value="#{userBean.mot_de_passe}" required="true" requiredMessage="Le mot de passe est requis"/>
+         </p:panelGrid>
+         <div style="text-align: center; margin-top: 1rem;">
+            <p:commandButton value="S'inscrire" action="#{userBean.register()}" update="messages"/>
+            <p:button value="Retour" outcome="login.xhtml"/>
+         </div>
+      </p:panel>
+   </h:form>
+</h:body>
+</html>

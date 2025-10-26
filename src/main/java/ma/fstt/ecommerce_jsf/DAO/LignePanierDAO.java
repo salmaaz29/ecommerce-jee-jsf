@@ -1,114 +1,118 @@
 package ma.fstt.ecommerce_jsf.DAO;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
+import ma.fstt.ecommerce_jsf.Beans.CommandeBean;
 import ma.fstt.ecommerce_jsf.Entities.LignePanier;
 import ma.fstt.ecommerce_jsf.Entities.Panier;
 
 import java.util.List;
+import java.util.logging.Logger;
 
+@Named
+@ApplicationScoped
 public class LignePanierDAO extends GenericDAO<LignePanier> {
+
+    private static final Logger logger = Logger.getLogger(LignePanierDAO.class.getName());
+
 
     public LignePanierDAO() {
         super(LignePanier.class);
     }
 
     // 1. Trouver toutes les lignes d'un panier
+    @Transactional
     public List<LignePanier> findByPanier(Panier panier) {
-        EntityManager em = JPAUtil.getEntityManager();
+        return em.createQuery(
+                        "SELECT lp FROM LignePanier lp WHERE lp.panier = :panier", LignePanier.class)
+                .setParameter("panier", panier)
+                .getResultList();
+    }
+
+    @Transactional
+    public void deleteByPanierId(Long panierId) {
         try {
-            return em.createQuery(
-                            "SELECT lp FROM LignePanier lp WHERE lp.panier = :panier", LignePanier.class)
-                    .setParameter("panier", panier)
-                    .getResultList();
-        } finally {
-            em.close();
+            Query query = em.createQuery(
+                    "DELETE FROM LignePanier lp WHERE lp.panier.id_panier = :panierId"
+            );
+            query.setParameter("panierId", panierId);
+            int deletedCount = query.executeUpdate();
+            em.flush();
+
+            logger.info("✅ " + deletedCount + " lignes de panier supprimées pour le panier ID: " + panierId);
+
+        } catch (Exception e) {
+            logger.severe("❌ Erreur suppression lignes panier: " + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
-    // 2. Trouver toutes les lignes d'un panier par ID
+
+    // trouver lesligne de panier par id
+    @Transactional
     public List<LignePanier> findByPanierId(Long panierId) {
-        EntityManager em = JPAUtil.getEntityManager();
-        try {
-            return em.createQuery(
-                            "SELECT lp FROM LignePanier lp WHERE lp.panier.id_panier = :panierId", LignePanier.class)
-                    .setParameter("panierId", panierId)
-                    .getResultList();
-        } finally {
-            em.close();
-        }
+        return em.createQuery(
+                        "SELECT lp FROM LignePanier lp " +
+                                "LEFT JOIN FETCH lp.produit " +  // ← Important !
+                                "WHERE lp.panier.id_panier = :panierId",
+                        LignePanier.class)
+                .setParameter("panierId", panierId)
+                .getResultList();
     }
-
     // 3. Trouver une ligne spécifique d'un produit dans un panier
+    @Transactional
     public LignePanier findByPanierAndProduit(Long panierId, Long produitId) {
-        EntityManager em = JPAUtil.getEntityManager();
         try {
             return em.createQuery(
-                            "SELECT lp FROM LignePanier lp WHERE lp.panier.id_panier = :panierId AND lp.produit.id = :produitId", LignePanier.class)
+                            "SELECT lp FROM LignePanier lp WHERE lp.panier.id_panier = :panierId AND lp.produit.id_produit = :produitId", LignePanier.class)
                     .setParameter("panierId", panierId)
                     .setParameter("produitId", produitId)
                     .getSingleResult();
-        } catch (Exception e) {
-            return null; // Aucune ligne trouvée
-        } finally {
-            em.close();
+        } catch (NoResultException e) {
+            return null;
         }
     }
 
     // 4. Mettre à jour la quantité d'une ligne de panier
+    @Transactional
     public void updateQuantite(Long lignePanierId, int nouvelleQuantite) {
-        EntityManager em = JPAUtil.getEntityManager();
-        try {
-            em.getTransaction().begin();
-            LignePanier ligne = em.find(LignePanier.class, lignePanierId);
-            if (ligne != null) {
-                ligne.setQuantite(nouvelleQuantite);
-                em.merge(ligne);
-            }
-            em.getTransaction().commit();
-        } finally {
-            em.close();
+        LignePanier ligne = em.find(LignePanier.class, lignePanierId);
+        if (ligne != null) {
+            ligne.setQuantite(nouvelleQuantite);
+            em.merge(ligne);
         }
     }
 
     // 5. Calculer le sous-total d'une ligne (quantité * prix)
+    @Transactional
     public Double calculerSousTotal(Long lignePanierId) {
-        EntityManager em = JPAUtil.getEntityManager();
-        try {
-            return em.createQuery(
-                            "SELECT lp.quantite * lp.produit.prix FROM LignePanier lp WHERE lp.id_ligne = :id", Double.class)
-                    .setParameter("id", lignePanierId)
-                    .getSingleResult();
-        } finally {
-            em.close();
-        }
+        return em.createQuery(
+                        "SELECT lp.quantite * lp.produit.prix FROM LignePanier lp WHERE lp.id_ligne = :id", Double.class)
+                .setParameter("id", lignePanierId)
+                .getSingleResult();
     }
 
     // 6. Supprimer toutes les lignes d'un panier
+    @Transactional
     public void deleteByPanier(Panier panier) {
-        EntityManager em = JPAUtil.getEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.createQuery("DELETE FROM LignePanier lp WHERE lp.panier = :panier")
-                    .setParameter("panier", panier)
-                    .executeUpdate();
-            em.getTransaction().commit();
-        } finally {
-            em.close();
-        }
+        em.createQuery("DELETE FROM LignePanier lp WHERE lp.panier = :panier")
+                .setParameter("panier", panier)
+                .executeUpdate();
     }
 
     // 7. Vérifier si un produit est déjà dans le panier
+    @Transactional
     public boolean existsInPanier(Long panierId, Long produitId) {
-        EntityManager em = JPAUtil.getEntityManager();
-        try {
-            Long count = em.createQuery(
-                            "SELECT COUNT(lp) FROM LignePanier lp WHERE lp.panier.id_panier = :panierId AND lp.produit.id = :produitId", Long.class)
-                    .setParameter("panierId", panierId)
-                    .setParameter("produitId", produitId)
-                    .getSingleResult();
-            return count > 0;
-        } finally {
-            em.close();
-        }
+        Long count = em.createQuery(
+                        "SELECT COUNT(lp) FROM LignePanier lp WHERE lp.panier.id_panier = :panierId AND lp.produit.id_produit = :produitId", Long.class)
+                .setParameter("panierId", panierId)
+                .setParameter("produitId", produitId)
+                .getSingleResult();
+        return count > 0;
     }
 }

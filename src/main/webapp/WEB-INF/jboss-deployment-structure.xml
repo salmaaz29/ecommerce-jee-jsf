@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-deployment-structure>
+    <deployment>
+        <exclusions>
+            <module name="org.hibernate.validator" />
+        </exclusions>
+        <dependencies>
+            <module name="org.hibernate.validator" services="import"/>
+        </dependencies>
+    </deployment>
+</jboss-deployment-structure>

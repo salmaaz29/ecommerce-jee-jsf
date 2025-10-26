@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Tableau de bord Administrateur</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Réinitialiser les styles PrimeFaces */
+        .ui-panel, .ui-panel-content {
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
+        }
+
+        .ui-panel .ui-panel-titlebar {
+            display: none !important;
+        }
+
+        /* Carte principale */
+        .dashboard-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        /* En-tête */
+        .dashboard-header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+        }
+
+        .welcome-title {
+            font-size: 2.8em;
+            font-weight: 300;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .admin-subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+
+        .user-info {
+            font-size: 1.1em;
+            background: rgba(255,255,255,0.1);
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Contenu */
+        .dashboard-content {
+            padding: 50px 40px;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 35px;
+            font-weight: 500;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        /* Grille des actions */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        /* Cartes d'action - Style amélioré */
+        .action-card-wrapper {
+            text-decoration: none;
+            display: block;
+        }
+
+        .action-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border: 2px solid #e9ecef;
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 0;
+        }
+
+        .action-card:hover::before {
+            opacity: 0.05;
+        }
+
+        .action-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.25);
+            border-color: #667eea;
+        }
+
+        .action-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .action-icon {
+            font-size: 4em;
+            margin-bottom: 25px;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .action-card:hover .action-icon {
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        .action-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .action-card:hover .action-title {
+            color: #667eea;
+        }
+
+        .action-description {
+            color: #7f8c8d;
+            font-size: 1em;
+            line-height: 1.6;
+            max-width: 280px;
+        }
+
+        /* Carte désactivée */
+        .action-card-disabled {
+            background: #f0f0f0;
+            opacity: 0.6;
+            cursor: not-allowed;
+            border-color: #ddd;
+        }
+
+        .action-card-disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .action-card-disabled .action-icon {
+            filter: grayscale(100%);
+        }
+
+        /* Section déconnexion */
+        .logout-section {
+            text-align: center;
+            padding-top: 40px;
+            margin-top: 30px;
+            border-top: 2px solid #ecf0f1;
+        }
+
+        .ui-button {
+            background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+            border: none !important;
+            border-radius: 30px !important;
+            padding: 16px 45px !important;
+            color: white !important;
+            font-size: 1.1em !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3) !important;
+        }
+
+        .ui-button:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.4) !important;
+        }
+
+        .ui-button .ui-button-text {
+            padding: 0 !important;
+        }
+
+        /* Panel accès interdit */
+        .access-denied-panel {
+            background: white !important;
+            border-radius: 25px !important;
+            padding: 60px 40px !important;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15) !important;
+            max-width: 550px;
+            margin: 100px auto !important;
+        }
+
+        .denied-icon {
+            font-size: 6em;
+            margin-bottom: 30px;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+
+        .denied-title {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .denied-text {
+            color: #7f8c8d;
+            margin-bottom: 35px;
+            line-height: 1.7;
+            font-size: 1.15em;
+        }
+
+        .ui-button-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2) !important;
+            border: none !important;
+            border-radius: 25px !important;
+            padding: 15px 35px !important;
+            font-size: 1.1em !important;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3) !important;
+        }
+
+        .ui-button-primary:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4) !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-content {
+                padding: 30px 20px;
+            }
+
+            .dashboard-header {
+                padding: 40px 20px;
+            }
+
+            .welcome-title {
+                font-size: 2.2em;
+            }
+
+            .admin-subtitle {
+                font-size: 1.1em;
+            }
+
+            .action-card {
+                padding: 30px 20px;
+            }
+
+            .access-denied-panel {
+                padding: 40px 30px !important;
+                margin: 50px auto !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .welcome-title {
+                font-size: 1.8em;
+            }
+
+            .section-title {
+                font-size: 1.5em;
+            }
+
+            .action-icon {
+                font-size: 3em;
+            }
+
+            .action-title {
+                font-size: 1.3em;
+            }
+
+            .denied-icon {
+                font-size: 4em;
+            }
+
+            .denied-title {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</h:head>
+<h:body>
+    <div class="dashboard-container">
+        <!-- Tableau de bord Admin -->
+        <h:form rendered="#{userBean.isAdmin()}">
+            <div class="dashboard-card">
+                <div class="dashboard-header">
+                    <div class="welcome-title">🎯 Tableau de Bord Administrateur</div>
+                    <div class="admin-subtitle">Gestion complète de la plateforme e-commerce</div>
+                    <div class="user-info">
+                        👤 Connecté en tant que : <strong>#{userBean.currentuser.nom}</strong>
+                    </div>
+                </div>
+
+                <div class="dashboard-content">
+                    <div class="section-title">Actions de Gestion</div>
+
+                    <div class="actions-grid">
+                        <!-- Gestion des produits -->
+                        <h:link outcome="admin_produits.xhtml" styleClass="action-card-wrapper">
+                            <div class="action-card">
+                                <span class="action-icon">📦</span>
+                                <div class="action-title">Gérer les Produits</div>
+                                <div class="action-description">
+                                    Ajouter, modifier ou supprimer des produits du catalogue. Gérer les stocks et les prix.
+                                </div>
+                            </div>
+                        </h:link>
+
+                        <!-- Gestion des commandes -->
+                        <h:link outcome="admin_commandes.xhtml" styleClass="action-card-wrapper">
+                            <div class="action-card">
+                                <span class="action-icon">📋</span>
+                                <div class="action-title">Gérer les Commandes</div>
+                                <div class="action-description">
+                                    Suivre et mettre à jour le statut des commandes clients. Gérer les livraisons.
+                                </div>
+                            </div>
+                        </h:link>
+
+                    </div>
+
+                    <div class="logout-section">
+                        <p:commandButton value="🚪 Se Déconnecter"
+                                         action="#{userBean.logout()}"
+                                         immediate="true"
+                                         ajax="false"
+                                         icon="pi pi-power-off"/>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+
+        <!-- Accès interdit -->
+        <p:panel styleClass="access-denied-panel" rendered="#{!userBean.isAdmin()}">
+            <div class="denied-icon">🚫</div>
+            <h2 class="denied-title">Accès Administrateur Requis</h2>
+            <p class="denied-text">
+                Vous n'avez pas les autorisations nécessaires pour accéder à cette page.
+                Cette zone est réservée aux administrateurs de la plateforme.
+            </p>
+            <p:button value="← Retour au Catalogue"
+                      outcome="catalogue.xhtml"
+                      styleClass="ui-button-primary"
+                      icon="pi pi-arrow-left"/>
+        </p:panel>
+    </div>
+</h:body>
+</html>

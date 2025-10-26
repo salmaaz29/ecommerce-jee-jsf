@@ -1,11 +1,312 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-<f:view>
-    <h:outputLabel value="Hello, world"/>
-</f:view>
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Connexion - E-commerce</title>
+    <style>
+        /* Styles généraux */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            margin: 20px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .login-header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .login-header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .login-body {
+            padding: 40px 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .login-button {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .register-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .register-link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            transition: background 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            text-decoration: none;
+            color: white;
+        }
+
+        /* Styles pour les messages */
+        .ui-messages {
+            margin-bottom: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 10px;
+            }
+
+            .login-body {
+                padding: 30px 20px;
+            }
+
+            .login-header {
+                padding: 25px 15px;
+            }
+        }
+
+        /* Animation d'entrée */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Icônes dans les champs */
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+        }
+
+        .input-with-icon .form-input {
+            padding-left: 45px;
+        }
+    </style>
+</h:head>
+<h:body>
+    <div class="login-container">
+        <!-- Carte de connexion -->
+        <div class="login-card">
+            <!-- En-tête -->
+            <div class="login-header">
+                <h1>🛍️ Bienvenue</h1>
+                <p>Connectez-vous à votre compte</p>
+            </div>
+
+            <!-- Corps du formulaire -->
+            <div class="login-body">
+                <!-- Messages -->
+                <p:messages id="messages" showDetail="true" autoUpdate="true"
+                            closable="true" severity="info,error,warn"/>
+
+                <h:form id="loginForm">
+                    <!-- Champ Email -->
+                    <div class="form-group">
+                        <p:outputLabel for="email" value="📧 Adresse Email" />
+                        <div class="input-with-icon">
+                            <i class="pi pi-envelope"></i>
+                            <p:inputText id="email" value="#{userBean.email}"
+                                         styleClass="form-input"
+                                         placeholder="votre@email.com"
+                                         required="true"
+                                         requiredMessage="L'email est obligatoire"/>
+                        </div>
+                    </div>
+
+                    <!-- Champ Mot de passe -->
+                    <div class="form-group">
+                        <p:outputLabel for="password" value="🔒 Mot de passe" />
+                        <div class="input-with-icon">
+                            <i class="pi pi-lock"></i>
+                            <p:password id="password" value="#{userBean.mot_de_passe}"
+                                        styleClass="form-input"
+                                        placeholder="Votre mot de passe"
+                                        required="true"
+                                        requiredMessage="Le mot de passe est obligatoire"
+                                        feedback="false"/>
+                        </div>
+                    </div>
+
+                    <!-- Bouton de connexion -->
+                    <p:commandButton value="🚀 Se connecter"
+                                     action="#{userBean.login()}"
+                                     styleClass="login-button"
+                                     update="messages"
+                                     process="@form"
+                                     onstart="PF('loadingDialog').show()"
+                                     oncomplete="PF('loadingDialog').hide()"/>
+                </h:form>
+
+                <!-- Pied de page -->
+                <div class="login-footer">
+                    <p>Nouveau client ?
+                        <p:button value="Créer un compte"
+                                  outcome="register.xhtml"
+                                  styleClass="register-link"/>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bouton retour -->
+        <p:button value="← Retour à l'accueil"
+                  outcome="index.xhtml"
+                  styleClass="back-button"/>
+    </div>
+
+    <!-- Dialog de chargement -->
+    <p:dialog widgetVar="loadingDialog" modal="true" draggable="false"
+              closable="false" resizable="false" showHeader="false">
+        <div style="text-align: center; padding: 20px;">
+            <p:spinner style="width: 30px; height: 30px;" />
+            <p style="margin-top: 15px; color: #667eea; font-weight: 500;">
+                Connexion en cours...
+            </p>
+        </div>
+    </p:dialog>
+
+    <!-- Script pour améliorer l'UX -->
+    <script type="text/javascript">
+        // Focus sur le premier champ au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                var emailField = document.querySelector('#email input');
+                if (emailField) {
+                    emailField.focus();
+                }
+            }, 500);
+        });
+
+        // Animation sur les champs
+        document.querySelectorAll('.form-input').forEach(function(input) {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+
+            input.addEventListener('blur', function() {
+                if (this.value === '') {
+                    this.parentElement.classList.remove('focused');
+                }
+            });
+        });
+    </script>
+</h:body>
 </html>

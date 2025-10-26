@@ -1,11 +1,124 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
-<f:view>
-    <h:outputLabel value="Hello, world"/>
-</f:view>
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Bienvenue sur E-commerce</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        /* General Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header Styling */
+        h1 {
+            text-align: center;
+            padding: 2rem 0;
+            font-size: 2.5rem;
+            color: #2c3e50;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 1.5rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Panel Styling */
+        .ui-panel {
+            max-width: 600px;
+            margin: 2rem auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            padding: 1.5rem;
+            border: none;
+        }
+
+        .ui-panel .ui-panel-titlebar {
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            color: #ffffff;
+            font-size: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+        }
+
+        /* Button Styling */
+        .ui-button {
+            display: inline-block;
+            margin: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 5px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .ui-button:first-child {
+            background-color: #2ecc71;
+            color: #ffffff;
+            border: none;
+        }
+
+        .ui-button:first-child:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .ui-button:last-child {
+            background-color: #e74c3c;
+            color: #ffffff;
+            border: none;
+        }
+
+        .ui-button:last-child:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+                padding: 1.5rem 1rem;
+            }
+
+            .ui-panel {
+                margin: 1rem;
+                padding: 1rem;
+            }
+
+            .ui-button {
+                display: block;
+                width: 100%;
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</h:head>
+<h:body>
+    <header>
+        <h1>Bienvenue sur notre site E-commerce</h1>
+    </header>
+    <p:panel header="Actions">
+        <div style="text-align: center;">
+            <p:button value="Se connecter" outcome="login.xhtml" />
+            <p:button value="S'inscrire" outcome="register.xhtml" />
+        </div>
+    </p:panel>
+</h:body>
 </html>
